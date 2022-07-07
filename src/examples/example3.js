@@ -1,349 +1,269 @@
 const model = {
     theme: {
-        type: 'bootstrap',
-        sectionLayout: 'tabs'
+        type: 'mui',
+        sectionLayout: 'default',
+        mui: {
+            variant: 'outlined',
+            size: 'small'
+        },
+        bootstrap: {
+            
+        }
     },
-    fields: [
+    fields:[
         {
-            name: 'basic',
+            name: 'othermembers',
             meta: {
-                type: 'section'
+                type: 'section',
+                displayType: 'title',
+                displayName: 'Get Insurance for other members of Family',
             },
-            fields: [
-                {name: 'title',meta:{
+            fields: [{
+                name: 'title',
+                meta: {
                     displayName: 'Title',
                     displayType: 'select',
-                    isRequired: true,
-                    displayProps: {
-                        md: 2
-                    },
-                    options:[{value:'mrs',label:'Mrs.'}]
-                }},
-                {name: 'firstName',meta:{
-                    displayName: 'First Name',
-                    displayType: 'text_field',  // default
-                    value: 'Manoj',
-                    isRequired: true,
-                    displayProps: {
-                        md: 3
-                    },
-                    validation: {
-                        required: true,
-                        required_detail: {
-                            errorMsg: 'Please enter your valid First Name'
-                        }
-                    }
-                }},
-                {name: 'lastName',meta:{
-                    displayName: 'Last Name',
-                    isRequired: true,
-                    displayProps: {
-                        md: 3
-                    },
-                    validation: {
-                        required: true,
-                        required_detail: {
-                            errorMsg: 'Please enter your valid Last Name'
-                        }
-                    }
-                }},
-                {name: 'middleName',meta:{
-                    displayName: 'Middle Name',
-                    displayProps: {
-                        md: 3
-                    },
-                    validation: {
-                        pattern: '^[a-zA-Z]*$',
-                        pattern_detail: {
-                            errorMsg: 'Not valid middle name'
-                        }
-                    }
-                }},
-                {name: 'dob',meta:{
-                    displayName: 'Date of Birth',
-                    displayType: 'date',
-                    isRequired: true,
-                    displayProps: {
-                        md: 6
-                    }
-                }},
-                {name: 'gender',meta:{
-                    displayName: 'Gender',
-                    displayType: 'select',
-                    options:[{value:'m',label:'Male'},{value:'f',label:'Female'}],
-                    isRequired: true,
-                    displayProps: {
-                        md: 6
-                    },
+                    options: [{label:'Mr.',value:'mr'},{label:'Mrs.',value:'mrs.'}],
                     validation: {
                         required: true
                     }
-                }},
-                {name: 'placeofbirth',meta:{
-                    displayName: 'Place of Birth',
-                    displayType: 'date',
-                    isRequired: true,
+                }
+            },{
+                name: 'pincode',
+                meta: {
+                    displayName: 'Pincode',
+                    displayType: 'number',
                     displayProps: {
-                        md: 6
-                    }
-                }},
-                {name: 'residentialStatus',meta:{
-                    displayName: 'Residential Status',
-                    displayType: 'select',
-                    options:[{value:'INDIAN', label:'Indian Resident'},{value:'NRI',label:'Non Resident Indian'}],
-                    isRequired: true,
-                    displayProps: {
-                        md: 6
-                    },
-                    dependencies: {
-                        onChange: [{
-                            type: 'condition',
-                            when: 'selected',
-                            then: 'load',
-                            reference: 'nationality'
-                        }]
-                    }
-                }},
-                {name: 'educationalQualification',meta:{
-                    displayName: 'Educational Qualification',
-                    displayType:'select',
-                    options:[{value:'BTECH',label:'B.Technology'},{value:'MCA',label:'Master of computer applications'}],
-                    isRequired: true,
-                    displayProps: {
-                        md: 6
-                    }
-                }},
-                {name: 'pan',meta:{
-                    displayName: 'PAN Number(Only for 50k+Premium)',
-                    displayProps: {
-                        md: 6
-                    }
-                }},
-                {name: 'nationality',meta:{
-                    displayName: 'Nationality',
-                    displayType:'select',
-                    options:[{value:'INDIAN', label:'Indian Resident'},{value:'NRI',label:'Non Resident Indian'}],
-                    isRequired: true,
-                    displayProps: {
-                        md: 6
-                    },
-                    dependencies: {
-                        exists: {
-                            ref: 'residentialStatus',
-                            value: 'NRI'
-                        }
-                    },
-                    loader: {
-                        type: 'api',
-                        url: 'https://jsonplaceholder.typicode.com/posts',
-                        valueKey: 'id',
-                        labelKey: 'title'
-                    }
-                }},
-                {name: 'maritalStatus',meta:{
-                    displayName: 'Marital Status',
-                    displayType:'select',
-                    options:[{value:'married', label:'Married'},{value:'bachelor',label:'bachelor'}],
-                    isRequired: true,
-                    displayProps: {
-                        md: 6
-                    }
-                }},
-                {name: 'convictionHistory',meta:{
-                    displayName: 'Is there any history of conviction?',
-                    displayType: 'radio',
-                    options:[{value:'yes',label:'Yes'},{value:'no', label:'No'}],
-                    displayProps: {
-                        md: 6
-                    }
-                }},
-                {name: 'disability',meta:{
-                    displayName: 'Do you have disability of any kind?',
-                    displayType: 'radio',
-                    options:[{value:'yes',label:'Yes'},{value:'no', label:'No'}],
-                    displayProps: {
-                        md: 6,
-                        isStandalone: true,
-                        align: 'center'
-                    }
-                }},
-                {name: 'lifeAssuredParty',meta:{
-                    displayName: 'Which type of party is the life assured?',
-                    displayType: 'radio',
-                    options:[{value:'individual',label:'Individual'},{value:'business', label:'Business'}],
-                    displayProps: {
-                        md: 6,
+                        md: '4',
                         isStandalone: true
+                    },
+                    validation: {
+                        required: true,
+                        pattern: '^[0-9]{6}$',
+                        pattern_detail: {
+                            errorMsg: 'Please enter a valid pincode'
+                        }
                     }
-                }},{
-                    name: 'agreed',meta:{
-                        displayName: 'Terms and conditions agreed?',
+                }
+            },{
+                name: 'issame ',
+                meta: {
+                    displayName: 'Is proposer and health insured same?',
+                    displayType: 'radio',
+                    displayProps: {
+                        md: '4'
+                    },
+                    value: 'yes',
+                    options: [{label:'Yes',value:'yes'},{label:'No',value:'no'}]
+                }
+            }]
+        }, {
+            name: 'memberdetails',
+            meta: {
+                type: 'section',
+                displayType: 'title',
+                displayName: 'Give details of members to see the prices',
+                description: 'Add details of the person you want added with you in the insurance',
+            },
+            fields: [
+                {
+                    name: 'self',
+                    meta: {
+                        displayName: '',
                         displayType: 'checkbox',
+                        value: 'true',
+                        options: [{label:'Self',value:'true'}],
+                        isDisabled: true,
                         displayProps: {
-                            md: 6,
-                            isStandalone: true
-                        },
-                        options: ['Option1','Option2']
-                    }
-                },{
-                    name: 'lifeassured',meta:{
-                        displayName: 'Life assured party',
-                        displayType: 'text_field',
-                        displayProps: {
-                            md: 6,
-                            isStandalone: true
+                            md: '2'
                         },
                         dependencies: {
                             exists: {
-                                ref: 'lifeAssuredParty',
-                                value:'business'
+                                ref: 'issame ',
+                                value: 'yes',
+                                section: 'othermembers'
                             }
                         }
                     }
+                }, {
+                    name: 'age',
+                    meta: {
+                        displayName: 'Age',
+                        displayType: 'number',
+                        displayProps: {
+                            md: '5'
+                        },
+                        validation: {
+                            min: 10,
+                            max: 100
+                        },
+                        dependencies: {
+                            exists: {
+                                ref: 'issame ',
+                                value: 'yes',
+                                section: 'othermembers'
+                            }
+                        }
+                    }
+                }, {
+                    name: 'gender',
+                    meta: {
+                        displayName: 'Gender',
+                        displayType: 'select',
+                        options:[{value:'m',label:'Male'},{value:'f',label:'Female'}],
+                        displayProps: {
+                            md: '5'
+                        },
+                        dependencies: {
+                            enabled: {
+                                ref: 'title',
+                                value: '',
+                                section: 'othermembers'
+                            },
+                            equals: {
+                                ref: 'title',
+                                value: 'mr',
+                                section: 'othermembers',
+                                currentValue: 'm',
+                                resetValue: '' 
+                            },
+                            exists: {
+                                ref: 'issame ',
+                                value: 'yes',
+                                section: 'othermembers'
+                            }
+                        }
+                    }
+                },
+                {
+                    name: 'spouse',
+                    meta: {
+                        displayName: '',
+                        displayType: 'checkbox',
+                        value: '',
+                        options: [{label:'Spouse',value:'true'}],
+                        displayProps: {
+                            md: '2',
+                            rs: true    // row starts
+                        },
+                    }
+                }, {
+                    name: 'spouse_age',
+                    meta: {
+                        displayName: 'Age',
+                        displayType: 'number',
+                        displayProps: {
+                            md: '5'
+                        },
+                        dependencies: {
+                            enabled: {
+                                ref: 'spouse',
+                                value: 'true'
+                            }
+                        }
+                    }
+                }, {
+                    name: 'spouse_gender',
+                    meta: {
+                        displayName: 'Gender',
+                        displayType: 'select',
+                        options:[{value:'m',label:'Male'},{value:'f',label:'Female'}],
+                        displayProps: {
+                            md: '5'
+                        },
+                        dependencies: {
+                            enabled: {
+                                ref: 'spouse',
+                                value: 'true'
+                            }
+                        }
+                    }
+                },{
+                    name: 'email',
+                    meta: {
+                        displayName: 'Email',
+                        displayType: 'email',
+                        value: 'manoj.adams@gmail.com',
+                        isReadonly: true,
+                    }
+                },
+                {
+                    name: 'date',
+                    meta: {
+                        displayName: 'DOB',
+                        displayType: 'date',
+                        validation: {
+                            required: true,
+                            required_detail: {
+                                errorMsg: 'DOB is required'
+                            },
+                            min:'2000-01-01',
+                            max:'2023-01-01',
+                        }
+                    }
                 }
-            ]
-        },{
-            name: 'father',
-            meta: {
-                type: 'section',
-                displayType: 'title',
-                displayName: "Father's Name"
-            },
-            fields: [
-                {name: 'fatherFirstName',meta:{
-                    displayName:'Father First Name',
-                    isRequired: true,
-                    displayProps: {
-                        md: 6
-                    }
-                }},
-                {name: 'fatherLastName',meta:{
-                    displayName: 'Father Last Name',
-                    isRequired: true,
-                    displayProps: {
-                        md: 6
-                    }
-                }},
-                {name: 'fatherMiddleName',meta:{
-                    displayName: 'Father Middle Name',
-                    displayProps: {
-                        md: 6
-                    }
-                }}
-            ]
-        },{
-            name: 'mother',
-            meta: {
-                type: 'section',
-                displayType: 'title',
-                displayName: "Mother's Name"
-            },
-            fields: [
-                {name: 'motherFirstName', meta:{
-                    displayName: 'Mother First Name',
-                    isRequired: true,
-                    displayProps: {
-                        md: 6
-                    }
-                }},
-                {name: 'motherLastName', meta:{
-                    displayName: 'Mother Last Name',
-                    isRequired: true,
-                    displayProps: {
-                        md: 6
-                    }
-                }},
-                {name: 'motherMiddleName', meta:{
-                    displayName: 'Mother Middle Name',
-                    displayProps: {
-                        md: 6
-                    }
-                }}
-            ]
-        },{
-            name: 'spouse',
-            meta: {
-                type: 'section',
-                displayType: 'title',
-                displayName: "Spouse's Name"
-            },
-            fields: [
-                {name: 'spouseFirstName', meta:{
-                    displayName: 'Spouse First Name',
-                    isRequired: true,
-                    displayProps: {
-                        md: 6
-                    }
-                }},
-                {name: 'spouseLastName', meta:{
-                    displayName: 'Spouse Last Name',
-                    isRequired: true,
-                    displayProps: {
-                        md: 6
-                    }
-                }},
-                {name: 'spouseMiddleName', meta:{
-                    displayName: 'Spouse Middle Name',
-                    displayProps: {
-                        md: 6
-                    }
-                }}
             ]
         }, {
-            name: 'place',
+            name: 'children',
             meta: {
                 type: 'section',
-                displayName: 'Place'
+                displayType: 'title',
+                displayName: 'Children'
             },
-            fields: [
-                {
-                    name: 'country',
-                    meta: {
-                        displayName: 'Country',
-                        displayType: 'select',
-                        displayProps: {
-                            md: 6
-                        },
-                        options: [{label:'India', value: 'INDIA'}, {label: 'Pakistan', value: 'PAKISTAN'}]
-                    },
+            fields: [{
+                name: 'childrengroup',
+                meta: {
+                    type: 'group'
                 },
-                {
-                    name: 'state',
+                fields: [
+                    {
+                    name: 'age',
                     meta: {
-                        displayName: 'State',
-                        displayType: 'select',
+                        displayName: 'Age',
+                        displayType: 'number',
                         displayProps: {
-                            md: 6
+                            md: '5'
                         },
-                        options: [],
-                        dependencies: {
-                            load: {
-                                ref: 'country',
-                                url: 'http://localhost:3000/api/states?q={0}'
-                            }
+                        validation: {
+                            required: true
                         }
-                    },
-                },
-                {
-                    name: 'district',
-                    meta: {
-                        displayName: 'District',
-                        displayType: 'select',
-                        displayProps: {
-                            md: 6
-                        },
-                        options: [],
-                        dependencies: {
-                            load: {
-                                ref: 'state',
-                                url: 'http://localhost:3000/api/districts?q={0}'
-                            }
+                    }
+                }, {
+                    name: 'gender',
+                        meta: {
+                            displayName: 'Gender',
+                            displayType: 'select',
+                            options:[{value:'m',label:'Male'},{value:'f',label:'Female'}],
+                            displayProps: {
+                                md: '5'
+                            },
                         }
-                    },
-                }
-            ]
+                }]
+            }]
         }
-
-]};
+    ],
+    buttons: [{
+        name: 'reset',
+        meta: {
+            displayName: 'Reset',
+            displayType: 'button',
+            className: 'my-3 offset-10 col',
+            events: {
+                onClick: 'reset'
+            }
+        }
+    },{
+        name: 'submit',
+        meta: {
+            displayName: 'Save',
+            displayType: 'button',
+            url: '',
+            className: 'm-3 btn-primary',
+            events: {
+                onClick: 'submit'
+            }
+        }
+    }]
+};
 
 export default model;
