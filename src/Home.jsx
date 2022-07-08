@@ -37,8 +37,12 @@ export default function Home() {
     },[schema]);
     const handleModelChange = (model) => {
         setSchema(model);
-        setValue(model.theme.type);
-        setGrouping(model.theme.sectionLayout);
+        if (model.theme && model.theme.type) {
+            setValue(model.theme.type);
+        }
+        if (model.theme && model.theme.sectionLayout) {
+            setGrouping(model.theme.sectionLayout);
+        }
         setOpen(false);
     }
     const onChangeTheme = (e) => {

@@ -214,31 +214,7 @@ const model = {
                 name: 'childrengroup',
                 meta: {
                     type: 'group'
-                },
-                fields: [
-                    {
-                    name: 'age',
-                    meta: {
-                        displayName: 'Age',
-                        displayType: 'number',
-                        displayProps: {
-                            md: '5'
-                        },
-                        validation: {
-                            required: true
-                        }
-                    }
-                }, {
-                    name: 'gender',
-                        meta: {
-                            displayName: 'Gender',
-                            displayType: 'select',
-                            options:[{value:'m',label:'Male'},{value:'f',label:'Female'}],
-                            displayProps: {
-                                md: '5'
-                            },
-                        }
-                }]
+                }
             }]
         }
     ],

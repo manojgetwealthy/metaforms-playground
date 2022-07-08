@@ -13,7 +13,7 @@ const model = {
                 {name: 'title',meta:{
                     displayName: 'Title',
                     displayType: 'select',
-                    isRequired: true,
+                    
                     displayProps: {
                         md: 2
                     },
@@ -23,7 +23,7 @@ const model = {
                     displayName: 'First Name',
                     displayType: 'text_field',  // default
                     value: 'Manoj',
-                    isRequired: true,
+                    
                     displayProps: {
                         md: 3
                     },
@@ -36,14 +36,18 @@ const model = {
                 }},
                 {name: 'lastName',meta:{
                     displayName: 'Last Name',
-                    isRequired: true,
+                    
                     displayProps: {
                         md: 3
                     },
+                    allowValidOnly: true,
                     validation: {
                         required: true,
                         required_detail: {
                             errorMsg: 'Please enter your valid Last Name'
+                        },
+                        info_detail: {
+                            infoMsg: 'Only alphanumeric characters are allowed'
                         }
                     }
                 }},
@@ -62,7 +66,7 @@ const model = {
                 {name: 'dob',meta:{
                     displayName: 'Date of Birth',
                     displayType: 'date',
-                    isRequired: true,
+                    
                     displayProps: {
                         md: 6
                     }
@@ -71,7 +75,7 @@ const model = {
                     displayName: 'Gender',
                     displayType: 'select',
                     options:[{value:'m',label:'Male'},{value:'f',label:'Female'}],
-                    isRequired: true,
+                    
                     displayProps: {
                         md: 6
                     },
@@ -82,7 +86,7 @@ const model = {
                 {name: 'placeofbirth',meta:{
                     displayName: 'Place of Birth',
                     displayType: 'date',
-                    isRequired: true,
+                    
                     displayProps: {
                         md: 6
                     }
@@ -91,7 +95,7 @@ const model = {
                     displayName: 'Residential Status',
                     displayType: 'select',
                     options:[{value:'INDIAN', label:'Indian Resident'},{value:'NRI',label:'Non Resident Indian'}],
-                    isRequired: true,
+                    
                     displayProps: {
                         md: 6
                     },
@@ -108,7 +112,7 @@ const model = {
                     displayName: 'Educational Qualification',
                     displayType:'select',
                     options:[{value:'BTECH',label:'B.Technology'},{value:'MCA',label:'Master of computer applications'}],
-                    isRequired: true,
+                    
                     displayProps: {
                         md: 6
                     }
@@ -123,7 +127,7 @@ const model = {
                     displayName: 'Nationality',
                     displayType:'select',
                     options:[{value:'INDIAN', label:'Indian Resident'},{value:'NRI',label:'Non Resident Indian'}],
-                    isRequired: true,
+                    
                     displayProps: {
                         md: 6
                     },
@@ -144,7 +148,7 @@ const model = {
                     displayName: 'Marital Status',
                     displayType:'select',
                     options:[{value:'married', label:'Married'},{value:'bachelor',label:'bachelor'}],
-                    isRequired: true,
+                    
                     displayProps: {
                         md: 6
                     }
@@ -212,14 +216,14 @@ const model = {
             fields: [
                 {name: 'fatherFirstName',meta:{
                     displayName:'Father First Name',
-                    isRequired: true,
+                    
                     displayProps: {
                         md: 6
                     }
                 }},
                 {name: 'fatherLastName',meta:{
                     displayName: 'Father Last Name',
-                    isRequired: true,
+                    
                     displayProps: {
                         md: 6
                     }
@@ -241,14 +245,14 @@ const model = {
             fields: [
                 {name: 'motherFirstName', meta:{
                     displayName: 'Mother First Name',
-                    isRequired: true,
+                    
                     displayProps: {
                         md: 6
                     }
                 }},
                 {name: 'motherLastName', meta:{
                     displayName: 'Mother Last Name',
-                    isRequired: true,
+                    
                     displayProps: {
                         md: 6
                     }
@@ -270,14 +274,14 @@ const model = {
             fields: [
                 {name: 'spouseFirstName', meta:{
                     displayName: 'Spouse First Name',
-                    isRequired: true,
+                    
                     displayProps: {
                         md: 6
                     }
                 }},
                 {name: 'spouseLastName', meta:{
                     displayName: 'Spouse Last Name',
-                    isRequired: true,
+                    
                     displayProps: {
                         md: 6
                     }
