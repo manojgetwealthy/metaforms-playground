@@ -44,6 +44,7 @@ export default function Sidebar() {
                             <ListItem><ListItemButton><Link to={"/example2"}>Example 2</Link></ListItemButton></ListItem>
                             <ListItem><ListItemButton><Link to="/example3">Example 3</Link></ListItemButton></ListItem>
                             <ListItem><ListItemButton><Link to="/example4">Example 4</Link></ListItemButton></ListItem>
+                            <ListItem><ListItemButton><Link to="/tests">Tests</Link></ListItemButton></ListItem>
                             {/* <ListItem><ListItemButton><Link to="/example4">Example 4</Link></ListItemButton></ListItem> */}
                         {/* </Router> */}
                     </List>

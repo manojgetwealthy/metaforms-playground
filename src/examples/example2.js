@@ -96,12 +96,6 @@ const model = {
                         md: 6
                     },
                     dependencies: {
-                        onChange: [{
-                            type: 'condition',
-                            when: 'selected',
-                            then: 'load',
-                            reference: 'nationality'
-                        }]
                     }
                 }},
                 {name: 'educationalQualification',meta:{
