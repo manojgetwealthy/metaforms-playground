@@ -49,6 +49,11 @@ export default function Sidebar() {
                         {/* </Router> */}
                     </List>
                 </Collapse>
+                <ListItem key="schema_builder">
+                    <ListItemButton>
+                        <Link to="builder">Schema Builder</Link>
+                    </ListItemButton>
+                </ListItem>
                 {/* <ListItem key="Term Insurance">
                     <ListItemButton onClick={toggle2}>
                         Term Insurance

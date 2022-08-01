@@ -1,90 +1,88 @@
 const model = {
-    theme: {
-        type: 'bootstrap',
-        sectionLayout: 'default'
+    "theme": {
+        "type": 'mui',
+        "sectionLayout": 'tabs'
     },
-    fields: [
+    "fields": [
         {
-            name: 'basic',
-            meta: {
-                type: 'section'
+            "name": 'basic',
+            "meta": {
+                "type": 'section'
             },
-            fields: [
-                {name: 'title',meta:{
-                    displayName: 'Title',
-                    displayType: 'select',
-                    
-                    displayProps: {
-                        md: 2
+            "fields": [
+                {
+                  "name": 'title',
+                  "meta":{
+                    "displayName": 'Title',
+                    "displayType": 'select',
+                    "displayProps": {
+                        "md": 2
                     },
-                    options:[{value:'mrs',label:'Mrs.'}]
+                    "options":[{"value":'mrs',"label":'Mrs.'}]
                 }},
-                {name: 'firstName',meta:{
-                    displayName: 'First Name',
-                    displayType: 'text_field',  // default
-                    value: 'Manoj',
-                    
-                    displayProps: {
-                        md: 3
+                {"name": 'firstName',"meta":{
+                    "displayType": 'text_field', 
+                    "value": '',
+                    "displayProps": {
+                        "md": 3
                     },
-                    validation: {
-                        required: true,
-                        required_detail: {
-                            errorMsg: 'Please enter your valid First Name'
+                    "validation": {
+                        "required": true,
+                        "required_detail": {
+                            "errorMsg": "Please enter your valid First Name"
                         }
                     }
                 }},
-                {name: 'lastName',meta:{
-                    displayName: 'Last Name',
-                    
-                    displayProps: {
-                        md: 3
+                {
+                  "name": 'middleName',
+                  "meta":{
+                    "displayName": 'Middle Name',
+                    "displayProps": {
+                        "md": 3
                     },
-                    validation: {
-                        required: true,
-                        required_detail: {
-                            errorMsg: 'Please enter your valid Last Name'
+                    "validation": {
+                        "pattern": '^[a-zA-Z]*$',
+                        "pattern_detail": {
+                            "errorMsg": "Not valid middle name"
                         }
                     }
                 }},
-                {name: 'middleName',meta:{
-                    displayName: 'Middle Name',
-                    displayProps: {
-                        md: 3
+                {"name": 'lastName',"meta":{
+                    "displayName": 'Last Name',
+                    "displayProps": {
+                        "md": 3
                     },
-                    validation: {
-                        pattern: '^[a-zA-Z]*$',
-                        pattern_detail: {
-                            errorMsg: 'Not valid middle name'
+                    "validation": {
+                        "required": true,
+                        "required_detail": {
+                            "errorMsg": 'Please enter your valid Last Name'
                         }
                     }
                 }},
-                {name: 'dob',meta:{
-                    displayName: 'Date of Birth',
-                    displayType: 'date',
-                    
-                    displayProps: {
-                        md: 6
+                {"name": 'dob',"meta":{
+                    "displayName": 'Date of Birth',
+                    "displayType": 'date',
+                    "displayProps": {
+                        "md": 6
                     }
                 }},
-                {name: 'gender',meta:{
-                    displayName: 'Gender',
-                    displayType: 'select',
-                    options:[{value:'m',label:'Male'},{value:'f',label:'Female'}],
-                    
-                    displayProps: {
-                        md: 6
+                {"name": "gender","meta":{
+                    "displayName": 'Gender',
+                    "displayType": 'select',
+                    "options":[{"value":'M',"label":"Male"},{"value":"F","label":"Female"}],
+                    "displayProps": {
+                        "md": 6
                     },
-                    validation: {
-                        required: true
+                    "validation": {
+                        "required": true
                     }
                 }},
-                {name: 'placeofbirth',meta:{
-                    displayName: 'Place of Birth',
-                    displayType: 'date',
+                {"name": "placeofbirth","meta":{
+                    "displayName": 'Place of Birth',
+                    "displayType": 'date',
                     
-                    displayProps: {
-                        md: 6
+                    "displayProps": {
+                        "md": 6
                     }
                 }},
                 {name: 'residentialStatus',meta:{

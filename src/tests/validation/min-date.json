@@ -1,22 +1,409 @@
 {
-    "fields": [{
-        "name": "first_name",
-        "meta": {
-            "displayType": "text",
-            "displayName": "First Name"
+    "theme": {
+        "type": "mui",
+        "sectionLayout": "default",
+        "mui": {
+            "size": "medium",
+            "variant": "outlined"
         }
-    }, {
-        "name": "dob",
-        "meta": {
-            "displayType": "date",
-            "displayName": "Date of Birth",
-            "value": "2020-11-21",
-            "validation": {
-                "min": "2020-12-21",
-                "min_detail": {
-                    "errorMsg": "Value needs to be greater than min. value"
+    },
+    "rest": {
+        "config": {
+            "apihost": "https://api.wealthyinsurancedev.in",
+            "basepath": "/insurance-meta/api/v0/term"
+        }
+    },
+    "fields": [
+        {
+            "name": "firstName",
+            "meta": {
+                "displayName": "First Name",
+                "displayType": "text_field",
+                "value": "",
+                "isRequired": true,
+                "displayProps": {
+                    "md": 6,
+                    "sm": 6
+                },
+                "validation": {
+                    "required": true,
+                    "required_detail": "Please enter your First Name"
+                }
+            }
+        },
+        {
+            "name": "middleName",
+            "meta": {
+                "displayName": "Middle Name",
+                "displayType": "text_field",
+                "value": "",
+                "isRequired": false,
+                "displayProps": {
+                    "md": 6
+                }
+            }
+        },
+        {
+            "name": "LastName",
+            "meta": {
+                "displayName": "Last Name",
+                "displayType": "text_field",
+                "value": "",
+                "isRequired": true,
+                "displayProps": {
+                    "md": 6
+                },
+                "validation": {
+                    "required": true,
+                    "required_detail": "Please enter valid Last Name"
+                }
+            }
+        },
+        {
+            "name": "phoneNumber",
+            "meta": {
+                "displayName": "PhoneNumber",
+                "displayType": "string",
+                "value": "",
+                "isRequired": true,
+                "displayProps": {
+                    "md": 6
+                },
+                "validation": {
+                    "required": true,
+                    "required_detail": "Please enter valid Phone Number",
+                    "pattern": "^[0-9]{10}$",
+                    "pattern_detail": {
+                        "errorMsg": "Enter valid phone number"
+                    }
+                }
+            }
+        },
+        {
+            "name": "email",
+            "meta": {
+                "displayName": "Email",
+                "displayType": "string",
+                "value": "",
+                "isRequired": true,
+                "displayProps": {
+                    "md": 6
+                },
+                "validation": {
+                    "required": true,
+                    "required_detail": "Please enter Email address",
+                    "pattern": "^([a-z0-9_\\-\\.+]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$",
+                    "pattern_detail": {
+                        "errorMsg": "Enter valid Email"
+                    }
+                }
+            }
+        },
+        {
+            "name": "annual_income",
+            "meta": {
+                "displayType": "number",
+                "displayName": "Annual Income(Rs)",
+                "value": null,
+                "displayProps": {
+                    "md": 6
+                },
+                "validation": {
+                    "required": true,
+                    "required_details": {
+                        "errorMsg": "Annual income is required"
+                    },
+                    "min": "500000",
+                    "min_detail": {
+                        "errorMsg": "Annual income must be greater than 5 Lakh Rupees"
+                    }
+                }
+            }
+        },
+        {
+            "name": "dob",
+            "meta": {
+                "displayType": "date",
+                "displayName": "Date of Birth",
+                "value": "",
+                "displayProps": {
+                    "md": 6
+                },
+                "validation": {
+                    "required": true,
+                    "required_details": {
+                        "errorMsg": "Date Of Birth is required"
+                    },
+                    "min": "1990-01-20",
+                    "max": "1991-12-31"
+                }
+            }
+        },
+        {
+            "name": "pincode",
+            "meta": {
+                "displayType": "number",
+                "displayName": "Pincode",
+                "value": "",
+                "displayProps": {
+                    "md": 6
+                },
+                "validation": {
+                    "required": true,
+                    "required_detail": {
+                        "errorMsg": "The field is required"
+                    }
+                }
+            }
+        },
+        {
+            "name": "state_id",
+            "meta": {
+                "displayType": "select",
+                "displayName": "State",
+                "options": [],
+                "value": "",
+                "displayProps": {
+                    "md": 6,
+                    "": 6
+                },
+                "config": {
+                    "type": "url_loader",
+                    "url": "/pincode/FYNTUNE/",
+                    "pathParams": [
+                        [
+                            "insurance_provider",
+                            "FYNTUNE"
+                        ]
+                    ],
+                    "queryParams": [
+                        [
+                            "pincode",
+                            {
+                                "type": "fieldValue",
+                                "ref": "pincode"
+                            }
+                        ]
+                    ],
+                    "valueKey": "id",
+                    "labelKey": "name"
+                },
+                "validation": {
+                    "required": true,
+                    "required_detail": {
+                        "errorMsg": "The field is required"
+                    }
+                },
+                "events": {
+                    "change": [
+                        {
+                            "type": "setter",
+                            "ref": "state_name",
+                            "valueKey": "name"
+                        },
+                        {
+                            "type": "setter",
+                            "ref": "state_id",
+                            "valueKey": "id"
+                        }
+                    ]
+                },
+                "dependencies": {
+                    "pattern_match_url_loader": {
+                        "type": "url_loader",
+                        "ref": "pincode",
+                        "pattern": "^[1-9][0-9]{5}$",
+                        "url": "/pincode/FYNTUNE/",
+                        "pathParams": [
+                            [
+                                "insurance_provider",
+                                "FYNTUNE"
+                            ]
+                        ],
+                        "queryParams": [
+                            [
+                                "pincode"
+                            ],
+                            [
+                                "get_states",
+                                "true"
+                            ]
+                        ],
+                        "valueKey": "id",
+                        "labelKey": "name"
+                    }
+                }
+            }
+        },
+        {
+            "name": "state_name",
+            "meta": {
+                "type": "hidden",
+                "value": ""
+            }
+        },
+        {
+            "name": "city_id",
+            "meta": {
+                "displayType": "select",
+                "displayName": "City",
+                "options": [],
+                "value": "",
+                "displayProps": {
+                    "xs": 6
+                },
+                "config": {
+                    "type": "url_loader",
+                    "url": "/pincode/FYNTUNE/",
+                    "pathParams": [
+                        [
+                            "insurance_provider",
+                            "FYNTUNE"
+                        ]
+                    ],
+                    "queryParams": [
+                        [
+                            "pincode",
+                            {
+                                "type": "fieldValue",
+                                "ref": "pincode"
+                            }
+                        ]
+                    ],
+                    "valueKey": "id",
+                    "labelKey": "name"
+                },
+                "validation": {
+                    "required": true,
+                    "required_detail": {
+                        "errorMsg": "The field is required"
+                    }
+                },
+                "events": {
+                    "change": [
+                        {
+                            "type": "setter",
+                            "ref": "city_name",
+                            "valueKey": "name"
+                        },
+                        {
+                            "type": "setter",
+                            "ref": "city_id",
+                            "valueKey": "id"
+                        }
+                    ]
+                },
+                "dependencies": {
+                    "load": {
+                        "type": "url_loader",
+                        "ref": "state_id",
+                        "url": "/pincode/FYNTUNE/",
+                        "pathParams": [
+                            [
+                                "insurance_provider",
+                                "FYNTUNE"
+                            ]
+                        ],
+                        "queryParams": [
+                            [
+                                "pincode",
+                                {
+                                    "type": "fieldValue",
+                                    "ref": "pincode"
+                                }
+                            ],
+                            [
+                                "state_id"
+                            ]
+                        ],
+                        "valueKey": "id",
+                        "labelKey": "name"
+                    }
+                }
+            }
+        },
+        {
+            "name": "city_name",
+            "meta": {
+                "type": "hidden",
+                "value": ""
+            }
+        },
+        {
+            "name": "occupation",
+            "meta": {
+                "displayType": "select",
+                "displayName": "Occupation",
+                "options": [
+                    {
+                        "label": "Salaried",
+                        "value": "salaried"
+                    },
+                    {
+                        "label": "Self Employed",
+                        "value": "self_employed"
+                    }
+                ],
+                "value": "",
+                "displayProps": {
+                    "md": 6
+                },
+                "validation": {
+                    "required": true,
+                    "required_detail": {
+                        "errorMsg": "Occupation is required"
+                    }
+                }
+            }
+        },
+        {
+            "name": "education",
+            "meta": {
+                "displayType": "select",
+                "displayName": "Education",
+                "options": [
+                    {
+                        "value": "post_graduate",
+                        "label": "Post Graduate"
+                    },
+                    {
+                        "value": "graduate",
+                        "label": "Graduate"
+                    },
+                    {
+                        "value": "12th_pass",
+                        "label": "12th Pass"
+                    },
+                    {
+                        "value": "10th_pass",
+                        "label": "10th Pass"
+                    }
+                ],
+                "value": "",
+                "displayProps": {
+                    "md": 6
+                },
+                "validation": {
+                    "required": true,
+                    "required_detail": {
+                        "errorMsg": "Occupation is required"
+                    }
                 }
             }
         }
-    }]
+    ],
+    "buttons": [
+        {
+            "name": "cancel",
+            "meta": {
+                "type": "cancel"
+            }
+        },
+        {
+            "name": "submit",
+            "meta": {
+                "type": "submit"
+            }
+        }
+    ]
 }

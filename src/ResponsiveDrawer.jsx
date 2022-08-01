@@ -16,6 +16,7 @@ import Example2 from './Example2';
 import Example3 from './Example3';
 import Example4 from './Example4';
 import Tests from './tests/Tests';
+import Builder from './Builder';
 
 const drawerWidth = 240;
 const basepath = '/metaforms-playground';
@@ -106,6 +107,7 @@ export default function ResponsiveDrawer(props) {
             <Route path={"/example3"} element={<Example3 />} />
             <Route path={"/example4"} element={<Example4 />} />
             <Route path={"/tests/:id"} element={<Tests />} />
+            <Route path={"/builder"} element={<Builder />} />
         </Routes>
       </Box>
     </Box>
