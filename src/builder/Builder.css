@@ -1,0 +1,19 @@
+.builder-edited::after {
+    content: attr();
+}
+
+#builder-copy-icon {
+    position: absolute;
+    left: -100px;
+    top: -100px;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    border: 1px dashed gray;
+}
+
+#builder-copy-icon svg {
+    font-size: 16px;
+    margin: 4px;
+    cursor: pointer;
+}

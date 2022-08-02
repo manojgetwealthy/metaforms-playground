@@ -1,23 +1,43 @@
 import MetaForm from '@manojadams/metaforms';
 import React, { useEffect, useRef, useState } from 'react';
+import { getOptions, options } from './Builder.data';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
+import './Builder.css';
+import EditField from './EditField';
 const defaultTheme = {type: 'mui', 'sectionLayout': 'tabs', 'mui': {'tabs':{'variant': 'fullWidth'}}};
 
 const Builder = () => {
+    const [field, setField] = useState('');
     const [fields, setFields] = useState([]);
     const [sections, addToSection] = useState([]);
     const [schema, setSchema] = useState({fields: [], theme: defaultTheme});
     const [defaultSchema, setDef] = useState('default');
     const [shown, setShown] = useState(true);
+    const [pageNum, setPageNum] = useState(1);
+    const [isOptionsTypeSelected, setOptionTypeSelected] = useState(false);
+    const [isEditField, setEditField] = useState(false);
 
     const sRef = useRef();
 
     const nRef = useRef();
     const dRef = useRef();
     const tRef = useRef();
+    const oRef = useRef();
     const displayRef = useRef();
+    const fileRef = useRef();
 
     const vRef = useRef();
     const vDetailRef = useRef();
+
+    const updateOptionType = () => {
+        if (['select', 'radio', 'radio-button', 'checkbox'].indexOf(tRef?.current?.value) >= 0) {
+            setOptionTypeSelected(true);
+        } else {
+            setOptionTypeSelected(false);
+        }
+    };
 
     const toggleForm = () => {
         setShown(false);
@@ -64,33 +84,46 @@ const Builder = () => {
 
     const addField = () => {
         if (nRef.current.value && dRef.current.value && tRef.current.value) {
-            let validation;
-            if (vRef.current.value) {
-                validation = {
-                    [vRef.current.value]: true
+           
+            let f;
+            if (tRef.current.value === 'hidden') {
+                f = {
+                    name: nRef.current.value,
+                    meta: {
+                        type: 'hidden'
+                    }
                 }
-                switch (vRef.current.value) {
-                    case 'required':
-                        validation.required_detail = {
-                            errorMsg: vDetailRef.current.value
-                        }
-                        break;
-                    default:
-                        let name = vRef.current.value + '_detail';
-                        validation[name] = vDetailRef.current.value;
-                }
-            };
-            const f = {
-                name: nRef.current.value,
-                meta: {
-                    displayType: tRef.current.value,
-                    displayName: dRef.current.value,
-                    displayProps: {
-                        md: displayRef.current.value
-                    },
-                    validation
-                }
-            };
+            } else {
+                let validation;
+                if (vRef.current.value) {
+                    validation = {
+                        [vRef.current.value]: true
+                    }
+                    switch (vRef.current.value) {
+                        case 'required':
+                            validation.required_detail = {
+                                errorMsg: vDetailRef.current.value
+                            }
+                            break;
+                        default:
+                            let name = vRef.current.value + '_detail';
+                            validation[name] = vDetailRef.current.value;
+                    }
+                };
+                const options = isOptionsTypeSelected ? getOptions(oRef.current.value) : undefined;
+                f = {
+                    name: nRef.current.value,
+                    meta: {
+                        displayType: tRef.current.value,
+                        displayName: dRef.current.value,
+                        displayProps: {
+                            md: displayRef.current.value
+                        },
+                        validation,
+                        options
+                    }
+                };
+            }
             nRef.current.value = '';
             dRef.current.value = '';
             tRef.current.value = '';
@@ -114,7 +147,73 @@ const Builder = () => {
         }
     }
     const clear = () => {
-        setSchema({fields: [], theme: defaultTheme});
+        setFields([]);
+    }
+    const importSc = () => {
+        fileRef.current.click();
+    }
+    const duplicateField = () => {
+        if (field) {
+            const f = {
+                name: field.name + '_1',
+                meta: {
+                    displayName: field.displayName,
+                    displayType: field.displayType,
+                    displayProps: field.displayProps,
+                    validation: field.validation,
+                    options: field.options
+                }
+            }
+            const matchField = fields.find(f => f.name === field.section);
+            if (matchField) {
+                matchField.fields.push(f);
+                setFields([...fields]);
+                toggleForm();
+            }
+        }
+    }
+    const deleteField = () => {
+        if (field) {
+            const matchSection = fields.find(f => f.name === field.section);
+            if (matchSection) {
+                const matchField = matchSection.fields.find(f => f.name === field.name);
+                if (matchField) {
+                    // delete the field
+                    matchSection.fields.splice(matchSection.fields.indexOf(matchField), 1);
+                    setFields([...fields]);
+                    toggleForm();
+                    setField('');
+                }
+            }
+        }
+    }
+    const updateField = (field) => {
+        const matchSection = fields.find(f => f.name === field.section);
+        if (matchSection) {
+            const matchField = matchSection.fields.find(f => f.name === field.name);
+            if (matchField) {
+                matchField.meta.displayName = field.displayName;
+                matchField.meta.displayType = field.displayType;
+                matchField.meta.displayProps = field.displayProps;
+                matchField.meta.validation = field.validation;
+                setFields([...fields]);
+                toggleForm();
+            }
+        }
+    }
+    const importFile = (e) => {
+        const files = e.target.files;
+        if (files && files.length > 0) {
+            const fileReader = new FileReader();
+            fileReader.onload = function(ev) {
+                const result = ev.target.result;
+                const jsonSchema = JSON.parse(result);
+                const sects = jsonSchema.fields.filter(f => f?.meta?.type === 'section').map(f => f.name);
+                setFields(jsonSchema.fields);
+                addToSection(sects);
+            }
+            fileReader.readAsText(files[0]);
+        }
     }
     const exportSc = () => {
         const jsonSchema = JSON.stringify(schema);
@@ -125,10 +224,17 @@ const Builder = () => {
     };
     return (
         <div className='container'>
+            <div id="builder-copy-icon">
+                <ContentCopyIcon onClick={duplicateField} />
+                <HighlightOffIcon onClick={deleteField} />
+                <ModeEditOutlineOutlinedIcon onClick={() => setEditField(true)} />
+            </div>
             <div className='row'>
                 <div className="col-3">
                     <h2>Schema Builder (tabs)</h2>
                     <button className='btn btn-sm' onClick={clear}>Clear</button>
+                    <input className='d-none' type='file' accept=".json" ref={fileRef} onChange={importFile} />
+                    <button className='btn btn-sm' onClick={importSc}>import</button>
                     <button className='btn btn-sm' onClick={exportSc}>Export</button>
                     <h4>Add a section</h4>
                     <div className="form-group">
@@ -136,6 +242,12 @@ const Builder = () => {
                     </div>
                     <button onClick={addSection}>Add</button>
 
+                    {
+                        isEditField && 
+                        <EditField field={field} onUpdate={updateField} onClose={() => {
+                            setEditField(false);
+                        }}/>
+                    }
                     <h4 style={{marginTop: "24px"}}>Add a field</h4>
                     <div className="form-group">
                         {/* <label htmlFor="Name"></label> */}
@@ -147,16 +259,31 @@ const Builder = () => {
                     </div>
                     <div className="form-group">
                         <label>Display Type</label>
-                        <select className="form-control" placeholder='Type' ref={tRef} multiple={true}>
+                        <select className="form-control" placeholder='Type' ref={tRef} multiple={true} onChange={updateOptionType}>
                             <option defaultValue={'text'}>text</option>
                             <option>select</option>
                             <option>date</option>
                             <option>number</option>
                             <option>radio-button</option>
+                            <option>radio</option>
+                            <option>checkbox</option>
                             <option>search</option>
+                            <option>email</option>
                             <option>hidden</option>
+                            <option>header</option>
                         </select>
                     </div>
+                    {
+                        isOptionsTypeSelected && 
+                        <div className="form-group">
+                            <label htmlFor="">Options</label>
+                            <select className='form-control' ref={oRef}>
+                            {
+                                options.map(o => (<option>{o}</option>))
+                            }
+                            </select>
+                        </div>
+                    }
                     <div className="form-group">
                         <label>Display Width</label>
                         <select className='form-control' ref={displayRef}>
@@ -197,15 +324,32 @@ const Builder = () => {
                     <div>
                         <MetaForm 
                             schema={schema} 
+                            pageNumber={pageNum}
                             onEvent={(payload) => {
                                 switch (payload.type) {
                                     case 'tab_change':
                                         const activeIndex = payload.index;
                                         setDef(sections[activeIndex]);
+                                        setPageNum(activeIndex+1);
                                         break;
                                     case 'field_click':
                                         const details = payload.detail;
                                         const section = payload.section;
+                                        const event = payload.event;
+                                        const targetPosition = payload.event.target.getBoundingClientRect();
+                                        event.target.classList.add('builder-edited');
+                                        const icon = document.querySelector('#builder-copy-icon');
+                                        icon.style.left = targetPosition.x + targetPosition.width + 'px';
+                                        icon.style.top = event.pageY - 10 + 'px';
+                                        setField({
+                                            name: payload.name,
+                                            displayName: details.displayName,
+                                            displayType: details.displayType,
+                                            displayProps: details.displayProps,
+                                            validation: details.validation,
+                                            options: details.options,
+                                            section: section
+                                        })
                                         // to do
                                 }
                             }}
