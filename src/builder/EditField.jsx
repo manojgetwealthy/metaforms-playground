@@ -91,6 +91,7 @@ const EditField = ({field, onUpdate, onClose}) => {
                 onUpdate(f);
                 onClose();
             }}>Update field</button>
+            <button onClick={onClose}>Close</button>
         </>
     )
 }
