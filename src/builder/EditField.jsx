@@ -1,9 +1,13 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { options } from './Builder.data';
 
 const EditField = ({field, onUpdate, onClose}) => {
     const [f, setF] = useState(field);
     const [isOptionsTypeSelected, setOptionTypeSelected] = useState();
+
+    useEffect(() => {
+        setF(field);
+    }, [field]);
 
     const updateOptionType = () => {
         if (['select', 'radio', 'radio-button', 'checkbox'].indexOf(f.displayType) >= 0) {
@@ -18,7 +22,10 @@ const EditField = ({field, onUpdate, onClose}) => {
             <h4 style={{marginTop: "24px"}}>Edit field {field.name}</h4>
             <div className="form-group">
                 {/* <label htmlFor="Name"></label> */}
-                <input className="form-control" type="text" placeholder='Name' value={f.name} />
+                <input className="form-control" type="text" placeholder='Name' value={f.name} onChange={(e) => {
+                    f.name = e.target.value;
+                    setF({...f});
+                }}/>
             </div>
             <div className="form-group">
                 {/* <label htmlFor=''>Display Name</label> */}

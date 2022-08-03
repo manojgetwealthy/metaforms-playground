@@ -17,6 +17,7 @@ import Example3 from './Example3';
 import Example4 from './Example4';
 import Tests from './tests/Tests';
 import Builder from './builder/Builder';
+import FormType from './builder/FormBuilder';
 
 const drawerWidth = 240;
 const basepath = '/metaforms-playground';
@@ -107,7 +108,10 @@ export default function ResponsiveDrawer(props) {
             <Route path={"/example3"} element={<Example3 />} />
             <Route path={"/example4"} element={<Example4 />} />
             <Route path={"/tests/:id"} element={<Tests />} />
-            <Route path={"/builder"} element={<Builder />} />
+            <Route path={"/form-builder"} element={<FormType />}>
+              <Route path={"simple"} element={<Builder type="simple" />} />
+              <Route path={"grouped"} element={<Builder type="grouped" />} />
+            </Route>
         </Routes>
       </Box>
     </Box>

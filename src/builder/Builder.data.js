@@ -9,6 +9,7 @@ const createOptions = (values) => {
             options.push({label, value});
         }
     });
+    return options;
 }
 
 export const gender_options = createOptions([['Male', 'M'], ['Female', 'F'], ['Others', 'O']]);

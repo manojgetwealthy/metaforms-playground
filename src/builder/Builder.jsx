@@ -6,15 +6,20 @@ import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
 import './Builder.css';
 import EditField from './EditField';
-const defaultTheme = {type: 'mui', 'sectionLayout': 'tabs', 'mui': {'tabs':{'variant': 'fullWidth'}}};
+import Utils from './Util';
+const defaultTheme = {type: 'mui', 'sectionLayout': 'default', 'mui': {'tabs':{'variant': 'fullWidth'}}};
+const tabTheme = {type: 'mui', 'sectionLayout': 'tabs', 'mui': {'tabs':{'variant': 'fullWidth'}}};
+const defaultErrorMsg = 'This field is required';
 
-const Builder = () => {
+const Builder = ({type}) => {
     const [field, setField] = useState('');
     const [fields, setFields] = useState([]);
     const [sections, addToSection] = useState([]);
-    const [schema, setSchema] = useState({fields: [], theme: defaultTheme});
+    const [formType, setFormType] = useState(type);
+    const [theme, setTheme] = useState(defaultTheme);
+    const [schema, setSchema] = useState({});
     const [defaultSchema, setDef] = useState('default');
-    const [shown, setShown] = useState(true);
+    const [shown, setShown] = useState(false);
     const [pageNum, setPageNum] = useState(1);
     const [isOptionsTypeSelected, setOptionTypeSelected] = useState(false);
     const [isEditField, setEditField] = useState(false);
@@ -31,6 +36,12 @@ const Builder = () => {
     const vRef = useRef();
     const vDetailRef = useRef();
 
+    const clearIcons = () => {
+        const icon = document.querySelector('#builder-copy-icon');
+        icon.style.left = '-100px';
+        icon.style.top = '-100px';
+    }
+
     const updateOptionType = () => {
         if (['select', 'radio', 'radio-button', 'checkbox'].indexOf(tRef?.current?.value) >= 0) {
             setOptionTypeSelected(true);
@@ -45,6 +56,14 @@ const Builder = () => {
     }
 
     useEffect(() => {
+        if (formType === 'simple') {
+            setTheme(defaultTheme);
+        } else {
+            setTheme(tabTheme);
+        }
+    }, [formType])
+
+    useEffect(() => {
         const sc = localStorage.getItem('schema');
         if (sc) {
             const obj = JSON.parse(sc);
@@ -52,15 +71,14 @@ const Builder = () => {
                 const sects = obj.fields.filter(f => f?.meta?.type === 'section').map(f => f.name);
                 addToSection(sects);
                 setFields(obj.fields ? obj.fields : []);
-                toggleForm();
             }
         }
     }, []);
 
     useEffect(() => {
-        setSchema({fields, theme: defaultTheme});
-        localStorage.setItem('schema', JSON.stringify(schema));
-    }, [fields]);
+        toggleForm();
+        setSchema({fields, theme});
+    }, [fields, theme]);
 
     useEffect(() => {
         if (sections && sections.length > 0) {
@@ -95,7 +113,7 @@ const Builder = () => {
                 }
             } else {
                 let validation;
-                if (vRef.current.value) {
+                if (vRef.current.value && vRef.current.value != 'Select') {
                     validation = {
                         [vRef.current.value]: true
                     }
@@ -113,6 +131,7 @@ const Builder = () => {
                 const options = isOptionsTypeSelected ? getOptions(oRef.current.value) : undefined;
                 f = {
                     name: nRef.current.value,
+                    id: Date.now(),
                     meta: {
                         displayType: tRef.current.value,
                         displayName: dRef.current.value,
@@ -130,12 +149,16 @@ const Builder = () => {
             displayRef.current.value = '';
             vRef.current.value = '';
             vDetailRef.current.value = '';
-            const matchField = fields.find(f => f.name === defaultSchema);
-            if (matchField) {
-                matchField.fields.push(f);
-                setShown(false);
-                setFields([...fields]);
-                setTimeout(() => {setShown(true)}, 200)
+            if (formType === 'simple') {
+                setFields([...fields, f]);
+            } else {
+                const matchField = fields.find(f => f.name === defaultSchema);
+                if (matchField) {
+                    matchField.fields.push(f);
+                    setShown(false);
+                    setFields([...fields]);
+                    setTimeout(() => {setShown(true)}, 200)
+                }
             }
         }
     }
@@ -148,6 +171,10 @@ const Builder = () => {
     }
     const clear = () => {
         setFields([]);
+        addToSection([]);
+        localStorage.setItem('schema', '');
+        clearIcons();
+        setField('');
     }
     const importSc = () => {
         fileRef.current.click();
@@ -155,7 +182,8 @@ const Builder = () => {
     const duplicateField = () => {
         if (field) {
             const f = {
-                name: field.name + '_1',
+                name: Utils.getUniqueName(fields, formType, field.name, defaultSchema),
+                id: Date.now(),
                 meta: {
                     displayName: field.displayName,
                     displayType: field.displayType,
@@ -164,40 +192,68 @@ const Builder = () => {
                     options: field.options
                 }
             }
-            const matchField = fields.find(f => f.name === field.section);
-            if (matchField) {
-                matchField.fields.push(f);
-                setFields([...fields]);
-                toggleForm();
+            if (formType === 'simple') {
+                setFields([...fields, f]);
+            } else {
+                const matchField = fields.find(f => f.name === field.section);
+                if (matchField) {
+                    matchField.fields.push(f);
+                    setFields([...fields]);
+                }
             }
         }
     }
     const deleteField = () => {
         if (field) {
-            const matchSection = fields.find(f => f.name === field.section);
-            if (matchSection) {
-                const matchField = matchSection.fields.find(f => f.name === field.name);
+            if (formType === 'simple') {
+                const matchField = fields.find(f => f.name === field.name);
                 if (matchField) {
-                    // delete the field
-                    matchSection.fields.splice(matchSection.fields.indexOf(matchField), 1);
-                    setFields([...fields]);
-                    toggleForm();
+                    let newFields = fields;
+                    newFields.splice(fields.indexOf(matchField, 1));
+                    setFields([...newFields]);
                     setField('');
+                    clearIcons();
+                }
+            } else {
+                const matchSection = fields.find(f => f.name === field.section);
+                if (matchSection) {
+                    const matchField = matchSection.fields.find(f => f.name === field.name);
+                    if (matchField) {
+                        // delete the field
+                        matchSection.fields.splice(matchSection.fields.indexOf(matchField), 1);
+                        setFields([...fields]);
+                        setField('');
+                        clearIcons();
+                    }
                 }
             }
         }
     }
     const updateField = (field) => {
-        const matchSection = fields.find(f => f.name === field.section);
-        if (matchSection) {
-            const matchField = matchSection.fields.find(f => f.name === field.name);
+        if (formType === 'simple') {
+            let matchField = fields.find(f => f.id === field.id);
+            if (!matchField) matchField = fields.find(f => f.name === field.name);
             if (matchField) {
+                matchField.name = field.name;
                 matchField.meta.displayName = field.displayName;
                 matchField.meta.displayType = field.displayType;
                 matchField.meta.displayProps = field.displayProps;
                 matchField.meta.validation = field.validation;
-                setFields([...fields]);
-                toggleForm();
+                setFields([...fields]); 
+            }
+        } else {
+            const matchSection = fields.find(f => f.name === field.section);
+            if (matchSection) {
+                let matchField = matchSection.fields.find(f => f.id === field.id);
+                if (!matchField) matchField = matchSection.fields.find(f => f.name === field.name);
+                if (matchField) {
+                    matchField.name = field.name;
+                    matchField.meta.displayName = field.displayName;
+                    matchField.meta.displayType = field.displayType;
+                    matchField.meta.displayProps = field.displayProps;
+                    matchField.meta.validation = field.validation;
+                    setFields([...fields]);
+                }
             }
         }
     }
@@ -209,8 +265,11 @@ const Builder = () => {
                 const result = ev.target.result;
                 const jsonSchema = JSON.parse(result);
                 const sects = jsonSchema.fields.filter(f => f?.meta?.type === 'section').map(f => f.name);
+                setShown(false);
+                setTheme(jsonSchema.theme);
                 setFields(jsonSchema.fields);
                 addToSection(sects);
+                setTimeout(()=>{setShown(true)}, 300);
             }
             fileReader.readAsText(files[0]);
         }
@@ -222,6 +281,11 @@ const Builder = () => {
         link.download = 'schema.json';
         link.click();
     };
+    const updateFormType = (e) => {
+        const value = e.target.value;
+        setFormType(value);
+        setShown(true);
+    }
     return (
         <div className='container'>
             <div id="builder-copy-icon">
@@ -230,17 +294,21 @@ const Builder = () => {
                 <ModeEditOutlineOutlinedIcon onClick={() => setEditField(true)} />
             </div>
             <div className='row'>
-                <div className="col-3">
-                    <h2>Schema Builder (tabs)</h2>
+                <div className="col-3 mp-autoscroll">
                     <button className='btn btn-sm' onClick={clear}>Clear</button>
                     <input className='d-none' type='file' accept=".json" ref={fileRef} onChange={importFile} />
-                    <button className='btn btn-sm' onClick={importSc}>import</button>
+                    <button className='btn btn-sm' onClick={importSc}>Import</button>
                     <button className='btn btn-sm' onClick={exportSc}>Export</button>
-                    <h4>Add a section</h4>
-                    <div className="form-group">
-                        <input type="text" className="form-control" ref={sRef} placeholder="Section name" />
-                    </div>
-                    <button onClick={addSection}>Add</button>
+                    {
+                        formType === 'grouped' && 
+                        <>
+                            <h4 className='mt-2'>Add a section</h4>
+                            <div className="form-group">
+                                <input type="text" className="form-control" ref={sRef} placeholder="Section name" />
+                            </div>
+                            <button onClick={addSection}>Add</button>
+                        </>
+                    }
 
                     {
                         isEditField && 
@@ -251,14 +319,14 @@ const Builder = () => {
                     <h4 style={{marginTop: "24px"}}>Add a field</h4>
                     <div className="form-group">
                         {/* <label htmlFor="Name"></label> */}
-                        <input className="form-control" type="text" placeholder='Name' ref={nRef} />
+                        <input className="form-control" type="text" placeholder='Name *' ref={nRef} />
                     </div>
                     <div className="form-group">
                         {/* <label htmlFor=''>Display Name</label> */}
-                        <input className="form-control" type="text" placeholder='Display name' ref={dRef}/>
+                        <input className="form-control" type="text" placeholder='Display name *' ref={dRef}/>
                     </div>
                     <div className="form-group">
-                        <label>Display Type</label>
+                        <label>Display Type *</label>
                         <select className="form-control" placeholder='Type' ref={tRef} multiple={true} onChange={updateOptionType}>
                             <option defaultValue={'text'}>text</option>
                             <option>select</option>
@@ -341,6 +409,15 @@ const Builder = () => {
                                         const icon = document.querySelector('#builder-copy-icon');
                                         icon.style.left = targetPosition.x + targetPosition.width + 'px';
                                         icon.style.top = event.pageY - 10 + 'px';
+                                        let matchField;
+                                        if (formType === 'simple') {
+                                            matchField = fields.find(f => f.name === payload.name);
+                                        } else {
+                                            const matchSectin = fields.find(f => f.name === section);
+                                            if (matchSectin) {
+                                                matchField = matchSectin.fields.find(f => f.name === payload.name);
+                                            }
+                                        }
                                         setField({
                                             name: payload.name,
                                             displayName: details.displayName,
@@ -348,13 +425,14 @@ const Builder = () => {
                                             displayProps: details.displayProps,
                                             validation: details.validation,
                                             options: details.options,
-                                            section: section
+                                            section: section,
+                                            id: matchField?.id || ''
                                         })
                                         // to do
                                 }
                             }}
                             onSubmit={(formData) => {
-                            console.log(formData);
+                                //todo
                         }}/>
                     </div>
                 }

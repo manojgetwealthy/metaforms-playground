@@ -8,8 +8,9 @@ import HomeIcon from '@mui/icons-material/Home';
 const basepath = '/metaforms-playground';
 
 export default function Sidebar() {
-    const [open, setOpen] = useState(true);
+    const [open, setOpen] = useState(false);
     const [open2, setOpen2] = useState(false);
+    const [openBuilder, setOpenBuilder] = useState(false);
     const toggle = () => {
         setOpen(!open);
     }
@@ -31,6 +32,26 @@ export default function Sidebar() {
                     </ListItemButton>
                 </ListItem>
                 <Divider />
+                <ListItem key="schema_builder">
+                    <ListItemButton onClick={()=>{
+                        setOpenBuilder(!openBuilder);
+                    }}>
+                        <Link to="form-builder">Form Builder</Link>
+                        {openBuilder ? <ExpandLess /> : <ExpandMore />}
+                    </ListItemButton>
+                </ListItem>
+                <Collapse in={openBuilder}>
+                    <List sx={{marginLeft: 4}}>
+                        <ListItem>
+                            <ListItemButton>
+                                <Link to="/form-builder/simple">Simple</Link>
+                            </ListItemButton>
+                            <ListItemButton>
+                                <Link to="/form-builder/grouped">Grouped</Link>
+                            </ListItemButton>
+                        </ListItem>
+                    </List>
+                </Collapse>
                 <ListItem key="Examples">
                     <ListItemButton onClick={toggle}>
                         Examples
@@ -49,11 +70,6 @@ export default function Sidebar() {
                         {/* </Router> */}
                     </List>
                 </Collapse>
-                <ListItem key="schema_builder">
-                    <ListItemButton>
-                        <Link to="builder">Schema Builder</Link>
-                    </ListItemButton>
-                </ListItem>
                 {/* <ListItem key="Term Insurance">
                     <ListItemButton onClick={toggle2}>
                         Term Insurance
